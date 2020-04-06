@@ -27,8 +27,9 @@ def search(query):
     filtered = []
     for res in results:
         filtered.append({
+            'title':res['_source']['title'],
             'url': res['_source']['url'], 
-            'highlight': '...'.join(res['highlight'])
+            'highlight': '...'.join(res['highlight']['content'])
             })
 
     return filtered
@@ -38,10 +39,10 @@ def magnet():
     form = SearchForm()
     if form.validate_on_submit():
         return redirect(url_for('needles', query=form.query.data))
-    return render_template('base.html', title='Magnet', form=form)
+    return render_template('base.html', title='HayStack', form=form)
 
 @app.route('/needles')
 def needles():
     query = request.args['query']
     needles = search(query)
-    return render_template('results.html', title='Magnet', needles=needles)
+    return render_template('results.html', title='HayStack', needles=needles)

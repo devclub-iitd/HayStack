@@ -3,10 +3,12 @@
         <title>{{ title }}</title>
     </head>
     <body>
-        <h1>Needles found</h1>
+        <h2><center>Needles found</center></h2>
         {% for needle in needles %}
-        <a href='{{ needle.url }}'>{{ needle.url }}</a>
-        <p>{{ needle.highlight }}</p>
+        <div>
+            <b><a href='{{ needle.url }}'>{{ needle.title }}</a></b></br>
+            </br>
+        </div>
         {% endfor %}
     </body>
 </html>

@@ -24,8 +24,8 @@ class Parser(object):
         whitespace = re.compile(r'\s+')
  #       parsed = re.sub(spec_char, ' ', soup.body.text)
         parsed = re.sub(whitespace, ' ', soup.body.text) if soup.body else ''
-
-        return parsed.lower()
+        title = soup.title.string if soup.title else ''
+        return title, parsed.lower()
 
 
     def extract_urls(self, html, root_url):

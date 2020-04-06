@@ -4,6 +4,6 @@ from wtforms.validators import DataRequired
 
 
 class SearchForm(FlaskForm):
-    query = StringField('Query', validators=[DataRequired()])
-    submit = SubmitField('Search')
+    query = StringField('Query', render_kw={'placeholder':'Enter search query'},validators=[DataRequired()])
+    submit = SubmitField('Use Magnet!')
 

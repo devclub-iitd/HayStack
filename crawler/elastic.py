@@ -1,5 +1,5 @@
 from elasticsearch import Elasticsearch
-
+import base64
 
 class ES(object):
     index = 'webpages'
@@ -43,9 +43,16 @@ class ES(object):
                     }
                 })
 
+    def gen_id(self, url):
+        url_bytes = url.encode('ascii')
+        base64_bytes = base64.b64encode(url_bytes)
+        base64_url = base64_bytes.decode('ascii')
+        return base64_url
 
-    def add_doc(self, url, content):
-        self.es.index(index=self.index, doc_type='_doc', body={
+
+    def add_doc(self, title, url, content):
+        self.es.index(index=self.index, doc_type='_doc', id=self.gen_id(url), body={
+            'title': title,
             'url': url,
             'content': content
             })

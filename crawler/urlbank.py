@@ -1,105 +1,113 @@
 from collections import defaultdict
 from queue import Queue
+from webclient import WebClient
+
 
 class EmptyStartListException(Exception):
     def __init__(self, message):
         self.message = message
 
-
-class DefaultdictQueue(Queue):
-    def __init__(self, *args, **kwargs):
-        super(DefaultdictQueue, self).__init__(*args, **kwargs)
-        self.queue = defaultdict(bool)
-
-    def _put(self, item):
-        self.queue[item] = True
-
-    def _get(self):
-        key = list(self.queue.keys())[0]
-        del(self.queue[key])
-        return key
-
-    def __contains__(self, item):
-        return bool(self.queue.get(item))
-
     
 class UrlBank(object):
     def __init__(self, start_list):
-        self.crawled = defaultdict(bool)
-        self.visited = defaultdict(bool)
-        self.que = DefaultdictQueue()
+        self.processed = defaultdict(bool)
+        self.que = Queue()
+        self.failed = []
+        self.webclient = WebClient()
+        self.nque = 0
+        self.ndone = 0
+        self.nproc = 0
 
+        self.init_processed()
         self.init_queue(start_list)
-        self.init_crawled()
-        self.init_visited()
+        self.init_failed()
 
 
     def init_queue(self, start_list):
         if start_list == []:
             raise EmptyStartListException('No urls in start list')
         else:
-            for url in start_list:
-                self.que.put(url)
+            self.bulk_add_to_queue(start_list)
 
         with open('queue.txt', 'r') as q:
             lines = q.read().split()
-            for url in lines:
-                self.que.put(url)
+            self.bulk_add_to_queue(lines)
+            q.close()
 
     
-    def init_crawled(self):
-        with open('crawled.txt', 'r') as c:
-            lines = c.read().split()
+    def init_processed(self):
+        with open('processed.txt', 'r') as p:
+            lines = p.read().split()
             for url in lines:
-                self.crawled[url] = True
+                self.processed[url] = True
+            p.close()
 
 
-    def init_visited(self):
-        with open('visited.txt', 'r') as v:
-            lines = v.read().split()
+    def init_failed(self):
+        with open('failed.txt', 'r') as f:
+            lines = f.read().split()
             for url in lines:
-                self.visited[url] = True
+                self.failed.append(url)
+            f.close()
 
+    
+    def update(self):
+        print(str(self.nproc)+' '+str(self.nque)+' '+str(self.ndone), end='              \r', flush=True)
+        
 
-    def next(self):
+    def next_task(self):
         return self.que.get()
 
 
     def add_to_queue(self, url):
-        if not url in self.que:
-            self.que.put(url)
-
+        if not self.has_processed(url):
+            self.add_to_processed(url)
+            try:
+                valid, url = self.webclient.valid_url(url)
+                self.add_to_processed(url)
+                if valid:
+                    self.que.put(url)
+                    self.nque += 1
+            except Exception as e:
+                self.add_to_failed(url)
+                print('\r'+__file__+': '+str(e)+': '+str(url))
+            self.update()
 
     def bulk_add_to_queue(self, urls):
         for url in urls:
             self.add_to_queue(url)
 
 
-    def has_crawled(self, url):
-        return bool(self.crawled.get(url))
+    def has_processed(self, url):
+        return bool(self.processed.get(url))
 
 
-    def add_crawled(self, url):
-        self.crawled[url] = True
+    def add_to_processed(self, url):
+        if not self.has_processed(url):
+            self.nproc += 1
+            self.processed[url] = True
 
 
-    def has_visited(self, url):
-        return bool(self.crawled.get(url))
+    def add_to_failed(self, url):
+        self.failed.append(url)
 
 
-    def add_visited(self, url):
-        self.visited[url] = True
-
+    def task_done(self):
+        self.que.task_done()
+        self.nque -= 1
+        self.ndone += 1
+        self.update()
 
     def exit_routine(self):
         with open('queue.txt', 'w+') as q:
             q.write('\n'.join(list(self.que.queue)))
             q.close()
 
-        with open('crawled.txt', 'w+') as c:
-            c.write('\n'.join(list(self.crawled.keys())))
-            c.close()
+        with open('processed.txt', 'w+') as p:
+            p.write('\n'.join(list(self.processed.keys())))
+            p.close()
+        
+        with open('failed.txt', 'w+') as f:
+            f.write('\n'.join(self.failed))
+            f.close()
 
-        with open('visited.txt', 'w+') as v:
-            v.write('\n'.join(list(self.visited.keys())))
-            v.close()
