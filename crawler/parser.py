@@ -7,7 +7,16 @@ import re
 class Parser(object):
     def __init__(self, base_url='iitd.ac.in', blacklist=['hospital.iitd.ac.in']):
         self.base_url = base_url
+        self.base_url_re = re.compile('^(\w*\.)*iitd.ac.in$')
         self.blacklist = blacklist
+        self.compile_re()
+
+
+    def compile_re(self):
+        escaped_base = self.base_url.replace('.', '\.')
+        self.base_re = re.compile(r'^(\w*\.)*'+escaped_base+'$')
+        self.spec_char_re = re.compile(r'[^0-9a-zA-Z\s]')
+        self.whitespace_re = re.compile(r'\s+')
 
 
     def parse_html(self, html):
@@ -20,10 +29,8 @@ class Parser(object):
         for s in soup(['script', 'style']):
             s.extract()
 
-        spec_char = re.compile(r'[^0-9a-zA-Z\s]')
-        whitespace = re.compile(r'\s+')
  #       parsed = re.sub(spec_char, ' ', soup.body.text)
-        parsed = re.sub(whitespace, ' ', soup.body.text) if soup.body else ''
+        parsed = re.sub(self.whitespace_re, ' ', soup.body.text) if soup.body else ''
         title = soup.title.string if soup.title else ''
         return title, parsed.lower()
 
@@ -62,7 +69,7 @@ class Parser(object):
         if not split_url.netloc:
             return True, parse.urljoin(root_url, split_url.path)
         
-        if not self.base_url in split_url.netloc:
+        if re.match(self.base_re, split_url.netloc):
             return False, None
 
         return True, ''.join([split_url[0]+'://']+list(split_url[1:3]))
