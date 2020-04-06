@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <h1>Magnet</h1>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.query(size=50) }}<br>
+                {% for error in form.query.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+    </body>
+</html>

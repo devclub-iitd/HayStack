@@ -1,0 +1,12 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <h1>Needles found</h1>
+        {% for needle in needles %}
+        <a href='{{ needle.url }}'>{{ needle.url }}</a>
+        <p>{{ needle.highlight }}</p>
+        {% endfor %}
+    </body>
+</html>
