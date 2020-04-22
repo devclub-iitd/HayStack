@@ -52,8 +52,8 @@ class UrlBank(object):
 
     
     def update(self):
-        print(str(self.nproc)+' '+str(self.nque)+' '+str(self.ndone), end='              \r', flush=True)
-        
+        #print(str(self.nproc)+' '+str(self.nque)+' '+str(self.ndone), end='              \r', flush=True)
+       pass 
 
     def next_task(self):
         return self.que.get()
@@ -70,7 +70,7 @@ class UrlBank(object):
                     self.nque += 1
             except Exception as e:
                 self.add_to_failed(url)
-                print('\r'+__file__+': '+str(e)+': '+str(url))
+#                print('\r'+__file__+': '+str(e)+': '+str(url))
             self.update()
 
     def bulk_add_to_queue(self, urls):

@@ -16,7 +16,7 @@ class Crawler(object):
             try:
                 resp = self.webclient.get(url)
             except Exception as e:
-                print('\r'+__name__+': '+str(e)+': '+str(url))
+#                print('\r'+__name__+': '+str(e)+': '+str(url))
                 self.urlbank.task_done()
                 continue
 

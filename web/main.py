@@ -4,7 +4,7 @@ from .config import Config
 from .forms import SearchForm
 
 
-es = Elasticsearch([{'port':'localhost', 'port':9200}])
+es = Elasticsearch([{'host':'elasticsearch', 'port':9200}])
 app = Flask(__name__)
 app.config.from_object(Config)
 

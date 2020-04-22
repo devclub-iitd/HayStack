@@ -1,0 +1,56 @@
+version: '3.4'
+services:
+  web:
+    build: ./web
+    ports: 
+      - ${PORT}:${PORT}
+    image: "${REGISTRY_NAME}devclubiitd/haystack:0.1"
+    depends_on: 
+      - elasticsearch
+    environment:
+      - VIRTUAL_HOST
+      - FLASK_RUN_PORT=${PORT}
+    env_file:
+        - ./.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT}"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - "internal"
+      - "reverseproxy"
+    logging:
+      options:
+        max-size: '12m'
+        max-file: '5'
+  index:
+    build: ./crawler
+    image: "${REGISTRY_NAME}devclubiitd/index:0.1"
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    networks:
+      - "internal"
+    logging:
+      options:
+        max-size: '12m'
+        max-file: '5'
+  elasticsearch:
+    image: ${REGISTRY_NAME}elasticsearch:7.6.2
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+    networks:
+      - "internal"
+    logging:
+      options:
+        max-size: '12m'
+        max-file: '5'
+networks:
+  reverseproxy:
+    external:
+      name: "reverseproxy"
+  internal:

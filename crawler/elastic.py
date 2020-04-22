@@ -3,7 +3,7 @@ import base64
 
 class ES(object):
     index = 'webpages'
-    def __init__(self, host='localhost', port=9200):
+    def __init__(self, host='elasticsearch', port=9200):
         self.es = Elasticsearch([{
             'host':host,
             'port':9200
