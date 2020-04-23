@@ -1,6 +1,7 @@
 from collections import defaultdict
 from queue import Queue
 from webclient import WebClient
+from os.path import exists
 
 
 class EmptyStartListException(Exception):
@@ -23,33 +24,47 @@ class UrlBank(object):
         self.init_failed()
 
 
+    def make_file(self, filename):
+        if not exists(filename):
+            open(filename, 'x').close()
+
+
     def init_queue(self, start_list):
         if start_list == []:
             raise EmptyStartListException('No urls in start list')
         else:
             self.bulk_add_to_queue(start_list)
 
-        with open('queue.txt', 'r') as q:
-            lines = q.read().split()
-            self.bulk_add_to_queue(lines)
-            q.close()
+        try:
+            with open('queue.txt', 'r') as q:
+                lines = q.read().split()
+                self.bulk_add_to_queue(lines)
+                q.close()
+        except FileNotFoundError:
+            self.make_file('queue.txt')
 
-    
+
     def init_processed(self):
-        with open('processed.txt', 'r') as p:
-            lines = p.read().split()
-            for url in lines:
-                self.processed[url] = True
-            p.close()
+        try:
+            with open('processed.txt', 'r') as p:
+                lines = p.read().split()
+                for url in lines:
+                    self.processed[url] = True
+                p.close()
+        except FileNotFoundError:
+            self.make_file('processed.txt')
 
 
     def init_failed(self):
-        with open('failed.txt', 'r') as f:
-            lines = f.read().split()
-            for url in lines:
-                self.failed.append(url)
-            f.close()
-
+        try:
+            with open('failed.txt', 'r') as f:
+                lines = f.read().split()
+                for url in lines:
+                    self.failed.append(url)
+                f.close()
+        except FileNotFoundError:
+            self.make_file('failed.txt')
+            
     
     def update(self):
         #print(str(self.nproc)+' '+str(self.nque)+' '+str(self.ndone), end='              \r', flush=True)
