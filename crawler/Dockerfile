@@ -4,7 +4,7 @@ RUN mkdir /crawler
 WORKDIR /crawler
 
 RUN apk add --update --no-cache g++ gcc libxslt-dev curl
-COPY ./requirements.txt .
+COPY requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir 
 
 COPY . .

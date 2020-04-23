@@ -4,7 +4,7 @@ RUN mkdir /web
 WORKDIR /web
 ENV FLASK_APP=main.py
 
-COPY ./requirements.txt .
+COPY requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir 
 RUN apk add --update --no-cache curl
 
