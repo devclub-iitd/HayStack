@@ -130,4 +130,5 @@ dmypy.json
 .gitsecret/keys/random_seed
 !*.secret
 *.txt
+!requirements.txt
 crawler/reset
