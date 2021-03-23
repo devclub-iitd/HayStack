@@ -1,22 +1,75 @@
-.search__input {
-    outline: none;
-    display: flex;
-    align-items: center;
-    border: 1px solid lightgray;
-    height: 30px;
-    padding: 10px 15px;
-    border-radius: 999px;
-    width: 79vw;
-    margin: 0 auto;
-    margin-top: 40px;
-    max-width: 560px;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
+.search{
+    width: 100% !important;
+}
+@media (min-width: 800px){
+    .search__input {
+        outline: none;
+        display: flex;
+        align-items: center;
+        border: 1px solid lightgray;
+        height: 30px;
+        padding: 10px 15px;
+        border-radius: 999px;
+        width: 79vw;
+        margin: 0 auto;
+        margin-top: 40px;
+        max-width: 560px;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+         -khtml-user-select: none; /* Konqueror HTML */
+           -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                      supported by Chrome, Edge, Opera and Firefox */
+    }
+    
+}
+
+@media (max-width: 800px){
+    .search__input {
+        outline: none;
+        display: flex;
+        align-items: center;
+        border: 1px solid lightgray;
+        height: 30px;
+        padding: 10px 15px;
+        border-radius: 999px;
+        margin: 0 auto;
+        margin-top: 40px;
+        max-width: 90%;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+         -khtml-user-select: none; /* Konqueror HTML */
+           -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                      supported by Chrome, Edge, Opera and Firefox */
+    }
+    
+}
+
+@media (max-width: 500px){
+    .search__input {
+        outline: none;
+        display: flex;
+        align-items: center;
+        border: 1px solid lightgray;
+        height: 30px;
+        padding: 10px 15px;
+
+        border-radius: 999px;
+        margin: 0 auto;
+        margin-top: 40px;
+        width: 90%;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+         -khtml-user-select: none; /* Konqueror HTML */
+           -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                      supported by Chrome, Edge, Opera and Firefox */
+    }
+    
 }
 
 .search__input>input {
@@ -43,10 +96,11 @@
 }
 
 .search__buttons_text {
+    width: 100%;
+    text-align: center;
     margin-top: 20px;
-    display: flex;
-    justify-content: center;
     color: gray;
+    font-size: 0.8em;
 }
 
 .search__buttons button {

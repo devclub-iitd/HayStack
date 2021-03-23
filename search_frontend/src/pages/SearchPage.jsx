@@ -44,6 +44,7 @@ function SearchPage({query}) {
       }
       }
     }).then(function (resp) {
+      console.log(resp);
         dispatch({
           type: actionTypes.SET_RESULTS,
           data: resp,
@@ -52,7 +53,33 @@ function SearchPage({query}) {
     }, function (err) {
       console.log(err.message);
     });
-  }, [page, term])
+  }, [page])
+  useEffect(() => {
+    setPage(1);
+    client.search({
+      index: "iitd_sites", // Your index name for example crud 
+      body: {
+        "from": (page-1)*10,
+        "size": 10,
+        "query": {
+          "match": {
+              "body": {
+                  "query" : term ?? location['pathname'].split("/")[2],
+              }
+          }
+      }
+      }
+    }).then(function (resp) {
+      console.log(resp);
+        dispatch({
+          type: actionTypes.SET_RESULTS,
+          data: resp,
+          term: term,
+        });
+    }, function (err) {
+      console.log(err.message);
+    });
+  }, [term])
 
   return (
     <div className="searchPage">

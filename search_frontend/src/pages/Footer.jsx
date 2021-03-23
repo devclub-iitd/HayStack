@@ -4,10 +4,13 @@ import { Link } from "react-router-dom";
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 
-function Footer(){
+function Footer({ home }){
+  const styles = {
+       marginTop: home ? 200 : 0,
+  }
    return(
-    <div className="footer">
-        <Grid container spacing={3}>
+    <div className="footer" style={styles}>
+        <Grid container spacing={0}>
         <Grid item xs={12} sm={4} className="footer_card">
           <img
           className="card_img"
@@ -34,8 +37,8 @@ function Footer(){
         </Grid>
       </Grid>
 
-        <div>
-        <Link item>Copyright DevClub 2021</Link>
+        <div class="fine_text">
+        <Link className="fine_text_link">&#169; DevClub 2021</Link>
         </div>
     </div>
    ) 

@@ -6,6 +6,7 @@ import { Avatar } from "@material-ui/core";
 import Search from "./Search";
 import logo from './LogoSVGWhiteBG.svg'
 import haystack from './haystack.png'
+import Footer from './Footer';
 
 var elasticsearch = require('elasticsearch');
 
@@ -49,6 +50,7 @@ function Home() {
           <Search qty={indexQty} />
         </div>
       </div>
+      <Footer home/>
     </div>
   );
 }
