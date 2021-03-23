@@ -11,6 +11,9 @@ import Pagination from '@material-ui/lab/Pagination';
 import Footer from './Footer';
 import qs from "qs";
 
+import PersonIcon from "@material-ui/icons/Person";
+import SearchIcon from "@material-ui/icons/Search";
+
 var elasticsearch = require('elasticsearch');
 
 var client = new elasticsearch.Client({
@@ -23,6 +26,8 @@ var client = new elasticsearch.Client({
 function SearchPage({query}) {
   const [{ term, data }, dispatch] = useStateValue();
   const [page, setPage] = useState(1);
+  const [allActive, setAllActive] = useState("_active");
+  const [profsOnly, setProfsOnly] = useState("");
   const handleChange = (event, value) => {
     setPage(value);
     window.scrollTo(0, 0);
@@ -36,12 +41,15 @@ function SearchPage({query}) {
         "from": (page-1)*10,
         "size": 10,
         "query": {
-          "match": {
-              "body": {
-                  "query" : term ?? location['pathname'].split("/")[2],
-              }
+          "multi_match" : {
+            "query" : term ?? location['pathname'].split("/")[2],
+            "fields" : profsOnly==="_active" ? [ "url^3"] : ["body", "url"],
+            "fuzziness": 4,
           }
-      }
+        }
+      //,"filter": [ 
+      //   { "term":  { "url": "~" }},
+      // ]
       }
     }).then(function (resp) {
       console.log(resp);
@@ -53,7 +61,8 @@ function SearchPage({query}) {
     }, function (err) {
       console.log(err.message);
     });
-  }, [page])
+  }, [page, allActive, profsOnly])
+
   useEffect(() => {
     setPage(1);
     client.search({
@@ -62,10 +71,10 @@ function SearchPage({query}) {
         "from": (page-1)*10,
         "size": 10,
         "query": {
-          "match": {
-              "body": {
-                  "query" : term ?? location['pathname'].split("/")[2],
-              }
+          "multi_match" : {
+            "query" : term ?? location['pathname'].split("/")[2],
+            "fields" : profsOnly==="_active" ? [ "url^3"] : ["body", "url"],
+            "fuzziness": 4,
           }
       }
       }
@@ -79,7 +88,16 @@ function SearchPage({query}) {
     }, function (err) {
       console.log(err.message);
     });
-  }, [term])
+  }, [term, allActive, profsOnly])
+
+  const allActiveCall = () => { 
+    setAllActive("_active");
+    setProfsOnly("");
+  }
+  const profsOnlyCall = () => { 
+    setAllActive("");
+    setProfsOnly("_active");
+  }
 
   return (
     <div className="searchPage">
@@ -96,6 +114,20 @@ function SearchPage({query}) {
         </div>
         <img src={logo} alt="DevClub Logo" width="80" className="searchPage__logo2"/>
       </div>
+
+      <div className="searchPage_options">
+            <div className="searchPage_optionsLeft">
+              <button className={'searchPage_option' + allActive} onClick={()=>allActiveCall()}>
+              <SearchIcon/>
+              All
+            </button>
+              <button className={'searchPage_option' + profsOnly} onClick={()=>profsOnlyCall()}>
+                <PersonIcon/>
+                Professors
+              </button>
+            </div>
+      </div>
+
       {!data && <img src="https://i.gifer.com/4V0b.gif" className ="loader" height="100"/>}
       {data && (
         <div className="searchPage__results">
@@ -107,9 +139,9 @@ function SearchPage({query}) {
               <a className="searchPage__resultLink" href={item['_source']['url']}>
                 {item['_source']['url']}
               </a>
-              <a href={item['_source']['url']} className="searchPage__resultTitle">
+              {item['_source']['url'] && item['_source']['title'] && <a href={item['_source']['url']} className="searchPage__resultTitle">
               <h2><img src={`http://www.google.com/s2/favicons?domain=`+item['_source']['url']}/>{" " + item['_source']['title'].slice(7, -8)}</h2>
-              </a>
+              </a>}
               <div className="searchPage__snippet">
               {item['_source']['link_text']}
               </div>
