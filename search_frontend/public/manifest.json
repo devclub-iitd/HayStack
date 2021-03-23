@@ -1,0 +1,25 @@
+{
+  "short_name": "Haystack",
+  "name": "Haystack",
+  "icons": [
+    {
+      "src": "https://cdn.pixabay.com/photo/2014/12/21/23/53/hay-576266_960_720.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "https://cdn.pixabay.com/photo/2014/12/21/23/53/hay-576266_960_720.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://cdn.pixabay.com/photo/2014/12/21/23/53/hay-576266_960_720.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

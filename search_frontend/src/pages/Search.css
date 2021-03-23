@@ -1,0 +1,69 @@
+.search__input {
+    outline: none;
+    display: flex;
+    align-items: center;
+    border: 1px solid lightgray;
+    height: 30px;
+    padding: 10px 15px;
+    border-radius: 999px;
+    width: 79vw;
+    margin: 0 auto;
+    margin-top: 40px;
+    max-width: 560px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.search__input>input {
+    flex: 1;
+    padding: 8px 13px;
+    font-size: medium;
+    border: none;
+    outline: none;
+}
+
+.search__input>input:focus {
+    outline-width: 0;
+    outline: none;
+}
+
+.search__inputIcon {
+    color: gray;
+}
+
+.search__buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.search__buttons_text {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    color: gray;
+}
+
+.search__buttons button {
+    margin: 5px;
+    background-color: #f8f8f8;
+    border: 1px solid white;
+    text-transform: inherit;
+    color: #5f6368;
+}
+
+.search__buttons button:hover {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    background-color: #f8f8f8;
+    color: #222;
+    border: 1px solid #c6c6c6;
+}
+
+.search__buttonsHidden {
+    display: none !important;
+}
