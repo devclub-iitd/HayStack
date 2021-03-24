@@ -13,6 +13,7 @@ import qs from "qs";
 
 import PersonIcon from "@material-ui/icons/Person";
 import SearchIcon from "@material-ui/icons/Search";
+import CourseIcon from "@material-ui/icons/LocalLibrary";
 
 var elasticsearch = require('elasticsearch');
 
@@ -28,29 +29,58 @@ function SearchPage({query}) {
   const [page, setPage] = useState(1);
   const [allActive, setAllActive] = useState("_active");
   const [profsOnly, setProfsOnly] = useState("");
+  const [coursesOnly, setCoursesOnly] = useState("");
   const handleChange = (event, value) => {
     setPage(value);
     window.scrollTo(0, 0);
   };
   const location = useLocation();
-  // console.log(location['pathname'].split('/')[2])
+
+  const queryBodyPageUpdate = {
+    "from": (page-1)*10,
+    "size": 10,
+    "query": {
+      "bool": {  
+        "must" : {
+          "multi_match" : {
+            "query":      term ?? location['pathname'].split("/")[2],
+            "fields":     profsOnly==="_active" ? [ "url^3", "link_text"] : coursesOnly==="_active" ? [ "url^3", "link_text"] : ["body", "url"],
+            "fuzziness": 6,
+          }
+        },
+        "filter": {
+          "regexp": {
+            "url": coursesOnly==="_active" ? ".*[a-zA-Z][a-zA-Z][a-zA-Z].*[1-9][0-9][0-9]" : ".*",
+          }
+       }
+      }
+    }
+  }
+  const queryBodyTermUpdate = {
+    "from": (page-1)*10,
+    "size": 10,
+    "query": {
+      "bool": {  
+        "must" : {
+          "multi_match" : {
+            "query":      term ?? location['pathname'].split("/")[2],
+            "fields":     profsOnly==="_active" ? [ "url^3", "link_text"] : coursesOnly==="_active" ? [ "url^3", "link_text"] : ["body", "url"],
+            "fuzziness": 6,
+          }
+        },
+        "filter": {
+          "regexp": {
+            "url": coursesOnly==="_active" ? ".*[a-zA-Z][a-zA-Z][a-zA-Z].*[1-9][0-9][0-9]" : ".*",
+          }
+       }
+      }
+    }
+  }
+
   useEffect(() => {
     client.search({
       index: "iitd_sites", // Your index name for example crud 
-      body: {
-        "from": (page-1)*10,
-        "size": 10,
-        "query": {
-          "multi_match" : {
-            "query" : term ?? location['pathname'].split("/")[2],
-            "fields" : profsOnly==="_active" ? [ "url^3"] : ["body", "url"],
-            "fuzziness": 4,
-          }
-        }
-      //,"filter": [ 
-      //   { "term":  { "url": "~" }},
-      // ]
-      }
+      body: queryBodyPageUpdate
     }).then(function (resp) {
       console.log(resp);
         dispatch({
@@ -61,23 +91,13 @@ function SearchPage({query}) {
     }, function (err) {
       console.log(err.message);
     });
-  }, [page, allActive, profsOnly])
+  }, [page, allActive, profsOnly, coursesOnly])
 
   useEffect(() => {
     setPage(1);
     client.search({
       index: "iitd_sites", // Your index name for example crud 
-      body: {
-        "from": (page-1)*10,
-        "size": 10,
-        "query": {
-          "multi_match" : {
-            "query" : term ?? location['pathname'].split("/")[2],
-            "fields" : profsOnly==="_active" ? [ "url^3"] : ["body", "url"],
-            "fuzziness": 4,
-          }
-      }
-      }
+      body: queryBodyTermUpdate
     }).then(function (resp) {
       console.log(resp);
         dispatch({
@@ -88,15 +108,22 @@ function SearchPage({query}) {
     }, function (err) {
       console.log(err.message);
     });
-  }, [term, allActive, profsOnly])
+  }, [term, allActive, profsOnly, coursesOnly])
 
   const allActiveCall = () => { 
     setAllActive("_active");
     setProfsOnly("");
+    setCoursesOnly("");
   }
   const profsOnlyCall = () => { 
     setAllActive("");
     setProfsOnly("_active");
+    setCoursesOnly("");
+  }
+  const coursesOnlyCall = () => { 
+    setAllActive("");
+    setProfsOnly("");
+    setCoursesOnly("_active");
   }
 
   return (
@@ -125,6 +152,10 @@ function SearchPage({query}) {
                 <PersonIcon/>
                 Professors
               </button>
+              <button className={'searchPage_option' + coursesOnly} onClick={()=>coursesOnlyCall()}>
+              <CourseIcon/>
+              Courses
+            </button>
             </div>
       </div>
 
