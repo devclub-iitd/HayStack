@@ -93,7 +93,8 @@
 }
 
 .searchPage__resultCount {
-    padding-left: 5% !important;
+    /* padding-left: 5% !important; */
+    margin: 20px;
     color: #70757a;
     font-size: 14px;
 }
@@ -200,7 +201,8 @@
   }
 
   .searchPage_option_active {
-    display: inline-block;
+    display: flex;
+    flex-wrap: 'wrap';
     border-bottom: 3px solid #1a73e8;
     color:#1a73e8;
     align-items: center;
@@ -210,6 +212,8 @@
   }
 
 .searchPage_option {
+    display: flex;
+    flex-wrap: 'wrap';
     border-bottom: 3px solid #1a73e800;
     font-size:1.2em;
     align-items: center;

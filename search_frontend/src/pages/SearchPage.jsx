@@ -146,15 +146,15 @@ function SearchPage({query}) {
             <div className="searchPage_optionsLeft">
               <button className={'searchPage_option' + allActive} onClick={()=>allActiveCall()}>
               <SearchIcon/>
-              All
-            </button>
+              <span>All</span>
+              </button>
               <button className={'searchPage_option' + profsOnly} onClick={()=>profsOnlyCall()}>
                 <PersonIcon/>
-                Professors
+              <span>Professors</span>
               </button>
               <button className={'searchPage_option' + coursesOnly} onClick={()=>coursesOnlyCall()}>
               <CourseIcon/>
-              Courses
+              <span>Courses</span>
             </button>
             </div>
       </div>
