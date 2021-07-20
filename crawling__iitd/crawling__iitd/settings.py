@@ -1,4 +1,4 @@
-# Scrapy settings for crawler project
+# Scrapy settings for crawling__iitd project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,14 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'crawler'
+BOT_NAME = 'crawling__iitd'
 
-SPIDER_MODULES = ['crawler.spiders']
-NEWSPIDER_MODULE = 'crawler.spiders'
+SPIDER_MODULES = ['crawling__iitd.spiders']
+NEWSPIDER_MODULE = 'crawling__iitd.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'crawler (+http://www.yourdomain.com)'
+#USER_AGENT = 'crawling__iitd (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -31,53 +31,53 @@ ROBOTSTXT_OBEY = True
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = False
+#COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-TELNETCONSOLE_ENABLED = False
+#TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-# DEFAULT_REQUEST_HEADERS = {
+#DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
-# }
+#}
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-# SPIDER_MIDDLEWARES = {
-#    'crawler.middlewares.CrawlerSpiderMiddleware': 543,
-# }
+#SPIDER_MIDDLEWARES = {
+#    'crawling__iitd.middlewares.CrawlingIitdSpiderMiddleware': 543,
+#}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'crawler.middlewares.CrawlerDownloaderMiddleware': 543,
-# }
+#DOWNLOADER_MIDDLEWARES = {
+#    'crawling__iitd.middlewares.CrawlingIitdDownloaderMiddleware': 543,
+#}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-# EXTENSIONS = {
+#EXTENSIONS = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
-# }
+#}
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    'crawler.pipelines.CrawlerPipeline': 300,
-# }
+#ITEM_PIPELINES = {
+#    'crawling__iitd.pipelines.CrawlingIitdPipeline': 300,
+#}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-AUTOTHROTTLE_ENABLED = True
+#AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-AUTOTHROTTLE_START_DELAY = 5
+#AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
-AUTOTHROTTLE_MAX_DELAY = 60
+#AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
-AUTOTHROTTLE_TARGET_CONCURRENCY = 2.0
+#AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 # Enable showing throttling stats for every response received:
-AUTOTHROTTLE_DEBUG = True
+#AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
@@ -86,22 +86,18 @@ AUTOTHROTTLE_DEBUG = True
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+FEEDS={
+    'elastic':{
+        'format':'elastic'
 
-# Feeds
-FEEDS = {
-    'elastic': {
-        'format': 'elastic'
     }
 }
-
 FEED_EXPORTERS = {
-    'elastic': 'crawler.elastic_exporter.ElasticExporter'
+    'elastic': 'crawling__iitd.elastic_exporter.ElasticExporter'
 }
 
-# Disable printing of items
-LOG_LEVEL = 'INFO'
-
-# Crawl in Breadth first order
+#for crawling in BFO
 DEPTH_PRIORITY = 1
 SCHEDULER_DISK_QUEUE = 'scrapy.squeues.PickleFifoDiskQueue'
 SCHEDULER_MEMORY_QUEUE = 'scrapy.squeues.FifoMemoryQueue'
+SCHEDULER_PRIORITY_QUEUE='scrapy.pqueues.ScrapyPriorityQueue'

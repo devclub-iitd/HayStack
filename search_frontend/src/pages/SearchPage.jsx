@@ -44,7 +44,7 @@ function SearchPage({query}) {
         "must" : {
           "multi_match" : {
             "query":      term ?? location['pathname'].split("/")[2],
-            "fields":     profsOnly==="_active" ? [ "url^3", "link_text"] : coursesOnly==="_active" ? [ "url^3", "link_text"] : ["body", "url"],
+            //"fields":     profsOnly==="_active" ? [ "url^3", "link_text"] : coursesOnly==="_active" ? [ "url^3", "link_text"] : ["body", "url"],
             "fuzziness": 6,
           }
         },
