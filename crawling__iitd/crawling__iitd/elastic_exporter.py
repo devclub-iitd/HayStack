@@ -44,7 +44,7 @@ class ElasticExporter(BaseItemExporter):
 
         #for bulk export
         if not self.client.exists(index=ELASTIC_INDEX_NAME, id=response_url):
-            print("****************************|| CONDITION PASSED ||***********************************")
+            #print("****************************|| CONDITION PASSED ||***********************************")
             self.list.append({"_index":"iitd_sites",
                           "_type":"_doc",
                           "_id":response_url,
@@ -54,6 +54,7 @@ class ElasticExporter(BaseItemExporter):
                           "meta_data":item["meta_data"],
                           "links_text":item["links_text"],
                           "links_url":item["links_url"],
+                          "linked_img":item["image_urls"],
                           "visits":0
                         })
         
@@ -61,7 +62,6 @@ class ElasticExporter(BaseItemExporter):
         if (len(self.list)>=5):
             bulk( self.client , self.list )
             #self.client.indices.refresh("iitd_sites")
-            print("*******************|| LIST CONDITION ||******************")
             for data in self.list:
                 if self.client.exists(index="iitd_sites", id=data["url"]):
                     self.mongo_collection.update_one({"url": data["url"]},

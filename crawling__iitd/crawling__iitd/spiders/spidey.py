@@ -79,6 +79,8 @@ class IITDSpider(CrawlSpider):
             self.logger.info(f'Scraping Page with url {response.url}')
             body=self.extract_body(response)
 
+            link_img=response.css('img ::attr(src)').getall()
+            clean_link_img=[]
             links=response.css('a')
             links_url=links.css('::attr(href)').extract()
             links_text=links.css('::text').extract()
@@ -87,12 +89,16 @@ class IITDSpider(CrawlSpider):
                 text=text.lstrip(remove)
                 text=text.rstrip(remove)
 
+            for img in link_img:
+                clean_link_img.append(response.urljoin(img))
+                
             item = {
                 "url":response.url,    
                 "status":response.status,
                 "title":response.css('title::text').get(),
                 "meta_data":response.css('meta').extract(),
                 "body":body,
+                "image_urls":clean_link_img,
                 "crawled_on":datetime.datetime.now(),
                 "links_url":links_url,
                 "links_text":links_text,

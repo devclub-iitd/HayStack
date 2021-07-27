@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import SearchPage from "./pages/SearchPage";
+import SearchImg from "./pages/SearchImg";
 function App() {
   return (
     <div className="app">
@@ -11,7 +12,9 @@ function App() {
           <Route path="/search">
             <SearchPage />
           </Route>
-
+          <Route path="/Images">
+            <SearchImg />
+          </Route>
           <Route path="/">
             <Home />
           </Route>
