@@ -4,6 +4,7 @@ import { actionTypes } from "../reducer";
 import { useStateValue } from "../stateProvider";
 import triggerSearch from "../search";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useLocation } from 'react-router';
 import Search from "./Search";
 import logo from './LogoSVGWhiteBG.svg'
@@ -14,6 +15,7 @@ import qs from "qs";
 import PersonIcon from "@material-ui/icons/Person";
 import SearchIcon from "@material-ui/icons/Search";
 import CourseIcon from "@material-ui/icons/LocalLibrary";
+import ImageIcon from "@material-ui/icons/Image";
 
 var elasticsearch = require('elasticsearch');
 
@@ -24,12 +26,13 @@ var client = new elasticsearch.Client({
     // If you have set username and password
 });
 
-function SearchPage({query}) {
+function SearchPage({query, all="_active",profs="",courses=""}) {
   const [{ term, data }, dispatch] = useStateValue();
   const [page, setPage] = useState(1);
-  const [allActive, setAllActive] = useState("_active");
-  const [profsOnly, setProfsOnly] = useState("");
-  const [coursesOnly, setCoursesOnly] = useState("");
+  const [allActive, setAllActive] = useState(all);
+  const [profsOnly, setProfsOnly] = useState(profs);
+  const [coursesOnly, setCoursesOnly] = useState(courses);
+  const history = useHistory();
   const handleChange = (event, value) => {
     setPage(value);
     window.scrollTo(0, 0);
@@ -125,6 +128,18 @@ function SearchPage({query}) {
     setProfsOnly("");
     setCoursesOnly("_active");
   }
+  const searchImg = (e) => {
+    //e.preventDefault();
+    //setAllActive("_active");
+    //setProfsOnly("");
+    //setCoursesOnly("");
+    // console.log("u clicked", input);
+    dispatch({
+      //type: actionTypes.SET_RESULTS,
+      term: term,
+    });
+    history.push(`/Images/${term}`);
+  }
 
   return (
     <div className="searchPage">
@@ -155,6 +170,10 @@ function SearchPage({query}) {
               <button className={'searchPage_option' + coursesOnly} onClick={()=>coursesOnlyCall()}>
               <CourseIcon/>
               <span>Courses</span>
+            </button>
+            <button className={'searchPage_option'} onClick={searchImg}>
+              <ImageIcon/>
+              <span>Images</span>
             </button>
             </div>
       </div>
@@ -189,3 +208,5 @@ function SearchPage({query}) {
 
 
 export default SearchPage;
+
+
