@@ -1,5 +1,4 @@
 # Define your item pipelines here
-#
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
@@ -8,6 +7,8 @@
 from itemadapter import ItemAdapter
 
 
-class CrawlingIitdPipeline:
+class CrawlingIitdPipeline(object):
     def process_item(self, item, spider):
+        item.save_to_es(item) #Execute the save_to_es method of the items.py file to write data to the elasticsearch search engine
         return item
+        
