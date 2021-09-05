@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./SearchPage.css";
 import { actionTypes } from "../reducer";
+import parse from 'html-react-parser';
 import { useStateValue } from "../stateProvider";
 import triggerSearch from "../search";
 import { Link } from "react-router-dom";
@@ -26,12 +27,13 @@ var client = new elasticsearch.Client({
     // If you have set username and password
 });
 
-function SearchPage({query, all="_active",profs="",courses=""}) {
+function SearchPage({query, all="_active",profs="",courses="", images=""}) {
   const [{ term, data }, dispatch] = useStateValue();
   const [page, setPage] = useState(1);
   const [allActive, setAllActive] = useState(all);
   const [profsOnly, setProfsOnly] = useState(profs);
   const [coursesOnly, setCoursesOnly] = useState(courses);
+  const [imagesOnly, setImagesOnly] = useState(images);
   const history = useHistory();
   const handleChange = (event, value) => {
     setPage(value);
@@ -44,40 +46,60 @@ function SearchPage({query, all="_active",profs="",courses=""}) {
     "size": 10,
     "query": {
       "bool": {  
-        "must" : {
-          "multi_match" : {
-            "query":      term ?? location['pathname'].split("/")[2],
-            "fields":     profsOnly==="_active" ? [ "url^3", "link_text"] : coursesOnly==="_active" ? [ "url^3", "link_text"] : ["body", "url"],
-            "fuzziness": 6,
-          }
-        },
-        "filter": {
-          "regexp": {
-            "url": coursesOnly==="_active" ? ".*[a-zA-Z][a-zA-Z][a-zA-Z].*[1-9][0-9][0-9]" : ".*",
-          }
-       }
+            "must" : {
+              "multi_match" : {
+                "query":      term ?? location['pathname'].split("/")[2],
+                "fields":   profsOnly==="_active" ? [ "url^3", "body"] : coursesOnly==="_active" ? [ "url^3", "body"] :["body"],
+                "fuzziness": "AUTO",
+              }
+            },
+            "filter": {
+              "regexp": {
+                "url": coursesOnly==="_active" ? ".*[a-zA-Z][a-zA-Z][a-zA-Z].*[1-9][0-9][0-9]" : ".*",
+              }
+            }
       }
-    }
+    },
+    "highlight" : {
+      "pre_tags" : ["<b>"],
+      "post_tags" : ["</b>"],
+      "fields" : {
+        "body" : {}
+      }
+    },
+    "sort" :[
+        { "visits":{"order":"desc"} }
+    ]
   }
   const queryBodyTermUpdate = {
     "from": (page-1)*10,
     "size": 10,
     "query": {
       "bool": {  
-        "must" : {
-          "multi_match" : {
-            "query":      term ?? location['pathname'].split("/")[2],
-            "fields":     profsOnly==="_active" ? [ "url^3", "link_text"] : coursesOnly==="_active" ? [ "url^3", "link_text"] : ["body", "url"],
-            "fuzziness": 6,
-          }
-        },
-        "filter": {
-          "regexp": {
-            "url": coursesOnly==="_active" ? ".*[a-zA-Z][a-zA-Z][a-zA-Z].*[1-9][0-9][0-9]" : ".*",
-          }
-       }
+            "must" : {
+              "multi_match" : {
+                "query":      term ?? location['pathname'].split("/")[2],
+                "fields":   profsOnly==="_active" ? [ "url^3", "body"] : coursesOnly==="_active" ? [ "url^3", "body"] :["body"],
+                "fuzziness": "AUTO",
+              }
+            },
+            "filter": {
+              "regexp": {
+                "url": coursesOnly==="_active" ? ".*[a-zA-Z][a-zA-Z][a-zA-Z].*[1-9][0-9][0-9]" : ".*",
+              }
+            }
+      },
+    },
+    "highlight" : {
+      "pre_tags" : ["<b>"],
+      "post_tags" : ["</b>"],
+      "fields" : {
+        "body" : {}
       }
-    }
+    },
+    "sort" :[
+      { "visits":{"order":"desc"} }
+    ]
   }
 
   useEffect(() => {
@@ -117,16 +139,25 @@ function SearchPage({query, all="_active",profs="",courses=""}) {
     setAllActive("_active");
     setProfsOnly("");
     setCoursesOnly("");
+    setImagesOnly("");
   }
   const profsOnlyCall = () => { 
     setAllActive("");
     setProfsOnly("_active");
     setCoursesOnly("");
+    setImagesOnly("");
   }
   const coursesOnlyCall = () => { 
     setAllActive("");
     setProfsOnly("");
     setCoursesOnly("_active");
+    setImagesOnly("");
+  }
+  const imagesOnlyCall = () => { 
+    setAllActive("");
+    setProfsOnly("");
+    setCoursesOnly("");
+    setImagesOnly("_active");
   }
   const searchImg = (e) => {
     //e.preventDefault();
@@ -159,19 +190,19 @@ function SearchPage({query, all="_active",profs="",courses=""}) {
 
       <div className="searchPage_options">
             <div className="searchPage_optionsLeft">
-              <button className={'searchPage_option' + allActive} onClick={()=>allActiveCall()}>
+            <button className={'searchPage_option' + allActive} onClick={()=>allActiveCall()}>
               <SearchIcon/>
               <span>All</span>
-              </button>
-              <button className={'searchPage_option' + profsOnly} onClick={()=>profsOnlyCall()}>
-                <PersonIcon/>
+            </button>
+            <button className={'searchPage_option' + profsOnly} onClick={()=>profsOnlyCall()}>
+              <PersonIcon/>
               <span>Professors</span>
-              </button>
-              <button className={'searchPage_option' + coursesOnly} onClick={()=>coursesOnlyCall()}>
+            </button>
+            <button className={'searchPage_option' + coursesOnly} onClick={()=>coursesOnlyCall()}>
               <CourseIcon/>
               <span>Courses</span>
             </button>
-            <button className={'searchPage_option'} onClick={searchImg}>
+            <button className={'searchPage_option' + imagesOnly} onClick={()=>imagesOnlyCall()}>
               <ImageIcon/>
               <span>Images</span>
             </button>
@@ -183,20 +214,47 @@ function SearchPage({query, all="_active",profs="",courses=""}) {
         <div className="searchPage__results">
           <p className="searchPage__resultCount">
             {data['hits']['total']['value']} hits for '<strong>{term ?? location['pathname'].split("/")[2]}</strong>' ({data['took']} milliseconds) ・ Couldn't find your needle? <u>Report</u>
-          </p>
-          {data['hits']['hits'].map((item) => (
+          </p>        
+          
+           {imagesOnly==='_active'?
+           data['hits']['hits'].map((item) => (
+                <div className="imagePage__result" key={item['_source']['id']}>
+                {/* <a className="imagePage__resultLink" href={item['_source']['url']}>
+                  {item['_source']['url']}
+                </a> */}
+                {item['_source']['linked_images']["img"].map((image,index) => (
+                  <div class="imagePage_image" key={index}>
+                    <a href={item['_source']['url']}><img src={image} width="300px" height="300px"/></a>
+                  </div>
+                ))}
+                {/* {item['_source']['url'] && <a href={item['_source']['url']} className="searchPage__resultTitle">
+                <img src={item['_source']['linked_img'][1]}/>
+                </a>} */}
+                
+                </div> 
+            
+            ))
+           :
+           data['hits']['hits'].map((item) => (
             <div className="searchPage__result" key={item['_source']['id']}>
-              <a className="searchPage__resultLink" href={item['_source']['url']}>
+              <a className="searchPage__resultLink" href={item['_source']['url']} onClick={() => linkClicked(item['_source'])}>
                 {item['_source']['url']}
               </a>
-              {item['_source']['url'] && item['_source']['title'] && <a href={item['_source']['url']} className="searchPage__resultTitle">
-              <h2><img src={`http://www.google.com/s2/favicons?domain=`+item['_source']['url']}/>{" " + item['_source']['title'].slice(7, -8)}</h2>
+              {item['_source']['url'] && item['_source']['title'] && <a href={item['_source']['url']} className="searchPage__resultTitle" onClick={() => linkClicked(item['_source'])}>
+              <h2><img src={`http://www.google.com/s2/favicons?domain=`+item['_source']['url']}/>{" " + item['_source']['title']}</h2>
               </a>}
-              <div className="searchPage__snippet">
-              {item['_source']['link_text']}
-              </div>
+              {item['highlight']['body'].map((found) =>(
+                  <div className="searchPage__snippet">
+                  <div className="foundElement">{parse(found)}</div>
+            
+                  {/* <div className="foundElement" dangerouslySetInnerHTML={{__html: found}} /> */}
+                  </div>
+              ))}
+              <div>VISITS: {item['_source']['visits']}</div>
             </div>
-          ))}
+          ))} 
+          
+
         </div>
       )}
     {data && data['hits']['total']['value']>0 && <div className="pagination"><Pagination count={data['hits']['total']['value']%10===0 ? data['hits']['total']['value']/10 : parseInt(data['hits']['total']['value']/10)+1 }  page={page} onChange={handleChange}/></div>}
@@ -205,8 +263,20 @@ function SearchPage({query, all="_active",profs="",courses=""}) {
 
   );
 }
+ 
+function linkClicked(item)
+{
+alert(item["visits"]);
+client.update({
+    index: "iitd_sites",
+    id:item["url"],
+    body: {
+      doc:{
+        visits:item["visits"]+1
+      }
+    }
+});
+} 
 
 
 export default SearchPage;
-
-
