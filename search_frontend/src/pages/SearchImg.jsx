@@ -21,7 +21,7 @@ import CourseIcon from "@material-ui/icons/LocalLibrary";
 var elasticsearch = require('elasticsearch');
 
 var client = new elasticsearch.Client({
-    host: 'http://localhost:9200/' 
+    host: 'http://elastic:9200/' 
     // http://localhost:9200/ 
     // http://root:12345@localhost:9200/ 
     // If you have set username and password
@@ -59,7 +59,17 @@ function SearchImg({query}) {
         //     }
         //  }
         }
-      }
+      },
+      "highlight" : {
+        "pre_tags" : ["<b>"],
+        "post_tags" : ["</b>"],
+        "fields" : {
+          "body" : {}
+        }
+      },
+      "sort" :[
+          { "visits":{"order":"desc"} }
+      ]
     }
     const queryBodyTermUpdate = {
       "from": (page-1)*10,
@@ -80,7 +90,17 @@ function SearchImg({query}) {
         //     }
         //  }
         }
-      }
+      },
+      "highlight" : {
+        "pre_tags" : ["<b>"],
+        "post_tags" : ["</b>"],
+        "fields" : {
+          "body" : {}
+        }
+      },
+      "sort" :[
+          { "visits":{"order":"desc"} }
+      ]
     }
   
     useEffect(() => {
@@ -116,21 +136,39 @@ function SearchImg({query}) {
       });
     }, [term])
   
-    // const allActiveCall = () => { 
-    //   setAllActive("_active");
+    const allActiveCall = (e) => { 
+      e.preventDefault();
+      //   setAllActive("_active");
     //   setProfsOnly("");
-    //   setCoursesOnly("");
-    // }
-    // const profsOnlyCall = () => { 
+    //   setCoursesOnly("")
+      dispatch({
+      //   type: actionTypes.SET_SEARCH_TERM,
+         term: term,
+       });
+      history.push(`/search/${term}`);;
+    }
+    const profsOnlyCall = (e) => { 
+      e.preventDefault();
     //   setAllActive("");
     //   setProfsOnly("_active");
     //   setCoursesOnly("");
-    // }
-    // const coursesOnlyCall = () => { 
+      dispatch({
+      //   type: actionTypes.SET_SEARCH_TERM,
+         term: term,
+       });
+      history.push(`/search/${term}`);
+    }
+    const coursesOnlyCall = (e) => { 
+         e.preventDefault();
     //   setAllActive("");
     //   setProfsOnly("");
     //   setCoursesOnly("_active");
-    // }
+      dispatch({
+      //   type: actionTypes.SET_SEARCH_TERM,
+         term: term,
+       });
+      history.push(`/search/${term}`);
+    }
     const searchImg = (e) => {
         e.preventDefault();
         // setAllActive("_active");
@@ -162,15 +200,15 @@ function SearchImg({query}) {
   
         <div className="searchPage_options">
               <div className="searchPage_optionsLeft">
-                <button className={'searchPage_option'} onClick={()=>history.push(`/search/${term ?? location['pathname'].split("/")[2]}`)}>
+                <button className={'searchPage_option'} onClick={allActiveCall}>  {/*history.push(`/search/${term ?? location['pathname'].split("/")[2]}`)}>*/}
                 <SearchIcon/>
                 <span>All</span>
                 </button>
-                <button className={'searchPage_option'} onClick={()=> history.push(`/search/${term ?? location['pathname'].split("/")[2]}` ) }>
+                <button className={'searchPage_option'} onClick={profsOnlyCall}>{/*{()=> history.push(`/search/${term ?? location['pathname'].split("/")[2]}` ) }>*/}
                   <PersonIcon/>
                 <span>Professors</span>
                 </button>
-                <button className={'searchPage_option'} onClick={()=>history.push(`/search/${term ?? location['pathname'].split("/")[2]}`)}>
+                <button className={'searchPage_option'} onClick={coursesOnlyCall}>{/*{()=>history.push(`/search/${term ?? location['pathname'].split("/")[2]}`)}>*/}
                 <CourseIcon/>
                 <span>Courses</span>
               </button>
@@ -194,7 +232,7 @@ function SearchImg({query}) {
                 {/* <a className="imagePage__resultLink" href={item['_source']['url']}>
                   {item['_source']['url']}
                 </a> */}
-                {item['_source']['linked_img'].map((image,index) => (
+                {item['_source']['linked_images']["img"].map((image,index) => (
                   <div class="imagePage_image" key={index}>
                     <a href={item['_source']['url']}><img src={image} width="300px" height="300px"/></a>
                   </div>
@@ -204,17 +242,7 @@ function SearchImg({query}) {
                 </a>} */}
                 
                 </div> 
-            //   <div className="searchPage__result" key={item['_source']['id']}>
-            //     <a className="searchPage__resultLink" href={item['_source']['url']}>
-            //       {item['_source']['url']}
-            //     </a>
-            //     {item['_source']['url'] && item['_source']['title'] && <a href={item['_source']['url']} className="searchPage__resultTitle">
-            //     <h2><img src={`http://www.google.com/s2/favicons?domain=`+item['_source']['url']}/>{" " + item['_source']['title'].slice(7, -8)}</h2>
-            //     </a>}
-            //     <div className="searchPage__snippet">
-            //     {item['_source']['link_text']}
-            //     </div>
-            //   </div> 
+            
             ))}
             </div></div>
           // {/* </div> */}

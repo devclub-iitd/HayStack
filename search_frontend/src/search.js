@@ -18,9 +18,9 @@ client.ping({
     requestTimeout: Infinity,
 }, function (error) {
     if (error) {
-        console.trace('Elasticsearch cluster is down!');
+        console.trace('Elasticsearch cluster is down! - TEST ABCDEFGHA');
     } else {
-        console.log('Elasticsearch cluster is up!');
+        console.log('Elasticsearch cluster is up!- TEST ABCDEFGHA');
     }
 });
 
