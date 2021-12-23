@@ -40,7 +40,9 @@ function Search({ hideButtons = false, query = "", qty}) {
           </Button>
           <Button variant="outlined"><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="linkn_button">I'm Feeling Lucky</a></Button>
         </div>
+       
         <div className="search__buttons_text">
+        
         <em>Index contains ~{qty} pages (soon to be much bigger)</em>
         </div>
         </>

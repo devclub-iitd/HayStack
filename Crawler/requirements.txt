@@ -1,0 +1,4 @@
+DateTime==4.3
+elasticsearch==7.15.2
+Scrapy==2.5.1
+textract==1.6.4
