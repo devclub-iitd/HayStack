@@ -29,15 +29,14 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
-# install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
-
 RUN npm install react-scripts@3.4.1 -g --silent
+
+# install app dependencies
+COPY package.json package-lock.json ./
+RUN npm ci
 
 # add app
 COPY . ./
 
 # start app
-RUN npm ci
 CMD npm run start
