@@ -2,17 +2,14 @@ version: '3.7'
 
 services:
   elastic:
-    # image: "${REGISTRY_NAME}devclubiitd/elasticsearch:0.1"
-    container_name: elastic
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    build:
+      context: ./elasticsearch
+      dockerfile: Dockerfile
+    image: "${REGISTRY_NAME}devclubiitd/elasticsearch:0.1"
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
     environment:
-      - xpack.security.enabled=false
       - discovery.type=single-node
-      - network.host=0.0.0.0
-      - http.cors.enabled=true
-      - http.cors.allow-origin="*"
     ports:
       - 9200:9200 # Need to expose for frontend
     networks:
