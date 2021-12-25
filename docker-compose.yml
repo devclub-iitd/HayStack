@@ -34,14 +34,13 @@ services:
     build:
       context: ./search_frontend
       dockerfile: Dockerfile
-    
     restart: "unless-stopped"
     networks:
       - "internal"
     ports:
       - 3000:3000
     environment:
-      - ELASTIC_URL=http://localhost:9200
+      - ELASTIC_URL= http://localhost:9200
     depends_on:
       - elastic
 
@@ -54,3 +53,4 @@ networks:
     external:
       name: "reverseproxy"
   internal:
+

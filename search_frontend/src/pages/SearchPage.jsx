@@ -19,9 +19,9 @@ import CourseIcon from "@material-ui/icons/LocalLibrary";
 import ImageIcon from "@material-ui/icons/Image";
 
 var elasticsearch = require('elasticsearch');
-
+console.log("SearchPage.jsx - - "+process.env.REACT_APP_ELASTIC_URL);
 var client = new elasticsearch.Client({
-    host: 'http://localhost:9200/' 
+  host: process.env.REACT_APP_ELASTIC_URL
     // http://localhost:9200/ 
     // http://root:12345@localhost:9200/ 
     // If you have set username and password
@@ -266,7 +266,6 @@ function SearchPage({query, all="_active",profs="",courses="", images=""}) {
  
 function linkClicked(item)
 {
-alert(item["visits"]);
 client.update({
     index: "iitd_sites",
     id:item["url"],
