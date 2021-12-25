@@ -9,9 +9,14 @@ from elasticsearch import helpers, Elasticsearch
 from elasticsearch.helpers import bulk
 #from elasticsearch_dsl.connections import connections
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
-
+from dotenv import load_dotenv
 from scrapy.loader import ItemLoader #Import the ItemLoader class and load the items container class to fill the data
 #import ItemLoader.processors.TakeFirst
+
+load_dotenv()
+
+host=os.getenv('ELASTIC_URL')
+ELASTIC_INDEX_NAME=os.getenv('ELASTIC_INDEX_NAME')
 
 class CrawlingIitdItemLoader(ItemLoader): #Custom Loader inherits ItemLoader class, call this class on the crawler page to fill the data to Item class
     default_output_processor = itemloaders.processors.TakeFirst() #The ItemLoader class is used by default to load the items container class to fill the data. It is a list type. You can get the contents of the list through the TakeFirst () method
@@ -21,8 +26,7 @@ def tianjia(value): #Custom data preprocessing function
     return value #Return the processed data to the Item. Currently the data processing is being done in spidey.py file so nothing special to write here, just returning the values here.
 
 bulk_lst=[] #for bulk indexing in ES using a list of documnets(i.e. list of Item with some extra fields) <blk_lst>
-host='elastic:9200'
-ELASTIC_INDEX_NAME="iitd_sites"
+
 class CrawlingIitdItem(scrapy.Item):
     # define the fields for your item here like:
     title = scrapy.Field (#Receive title information obtained by the crawler
