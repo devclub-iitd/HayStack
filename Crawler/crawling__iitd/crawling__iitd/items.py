@@ -9,14 +9,13 @@ from elasticsearch import helpers, Elasticsearch
 from elasticsearch.helpers import bulk
 #from elasticsearch_dsl.connections import connections
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
-from dotenv import load_dotenv
 from scrapy.loader import ItemLoader #Import the ItemLoader class and load the items container class to fill the data
+import params
 #import ItemLoader.processors.TakeFirst
 
-load_dotenv()
 
-host=os.getenv('ELASTIC_URL')
-ELASTIC_INDEX_NAME=os.getenv('ELASTIC_INDEX_NAME')
+host=params.ELASTIC_URL
+ELASTIC_INDEX_NAME=params.ELASTIC_INDEX_NAME
 
 class CrawlingIitdItemLoader(ItemLoader): #Custom Loader inherits ItemLoader class, call this class on the crawler page to fill the data to Item class
     default_output_processor = itemloaders.processors.TakeFirst() #The ItemLoader class is used by default to load the items container class to fill the data. It is a list type. You can get the contents of the list through the TakeFirst () method
@@ -89,7 +88,7 @@ class CrawlingIitdItem(scrapy.Item):
                           "visits":0
                         })
 
-        if len(bulk_lst)>=10:
+        if len(bulk_lst)>=100:
             bulk(es_client,bulk_lst)
             bulk_lst.clear()
             return

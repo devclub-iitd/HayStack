@@ -1,19 +1,11 @@
 # IITD_SearchEngine
-This repository contains a search engine for domain "iitd.ac.in"
-
-As of 26th December 2021
-
-Branch dev has the latest working code for deployment
-
-A .env file needed in [Crawler/crawling__iitd/crawling__iitd] having the following contents
-ELASTIC_URL='elastic:9200'
-ELASTIC_INDEX_NAME='iitd_sites'
+This repository contains a search engine for domains "iitd.ac.in" and "iitd.ernet.in"
 
 To run -
 docker-compose up --build
 
 Crawler limit - 20000 pages
-Elastic Bulk export for every 10 pages
+Elastic Bulk export for every 100 pages
 
 Functionality enabled to limit the no. of requests made to iitd.ac.in per second
 
@@ -22,4 +14,16 @@ python modules required
 -elasticsearch
 -textract
 -datetime
--python-dotenv
+
+Required URLs for Crawler specified in - Crawler/crawling__iitd/crawling__iitd/params.py
+Required URLs for nginx - nginx/nginx.conf
+Required URLs for search_frontend - search_frontend/Dockerfile
+
+Nginx -
+/ - passes request to frontend
+/iitd_sites - passes request to Elasticsearch
+
+
+Nginx listens on port 7000, to change - 
+- change REACT_APP_ELASTIC_URL in search_frontend/Dockerfile
+- change port in Nginx service in docker-compose.yml

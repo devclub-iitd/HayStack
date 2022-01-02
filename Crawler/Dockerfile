@@ -12,7 +12,6 @@ COPY requirements.txt /code
 
 RUN pip install -r requirements.txt --prefer-binary
 
-ENV ELASTIC_URL "http://localhost:9200"
 COPY ./crawling__iitd .
 
 # CMD scrapy crawl IITD --nologs

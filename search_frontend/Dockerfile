@@ -30,7 +30,7 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 
 # ARG REACT_APP_ELASTIC_URL
-ENV REACT_APP_ELASTIC_URL "http://localhost:9200"
+ENV REACT_APP_ELASTIC_URL "http://localhost:7000"
 
 # RUN npm install react-scripts@3.4.1 -g --silent
 
