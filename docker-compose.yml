@@ -26,7 +26,7 @@ services:
       - elastic
 
   nginx:
-    image: "${REGISTRY_NAME}devclubiitd/citadel-nginx:0.1"
+    image: "${REGISTRY_NAME}devclubiitd/haystack-nginx:0.1"
     build: ./nginx
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
