@@ -14,8 +14,9 @@ RUN pip install -r requirements.txt --prefer-binary
 
 COPY ./crawling__iitd .
 
-CMD scrapy crawl IITD --nolog
+# CMD scrapy crawl IITD --nologs
 
 
-# RUN chmod +x /code/entry-point.sh
-# ENTRYPOINT [ "/code/entry-point.sh" ]
+RUN chmod +x /code/entry-point.sh
+ENTRYPOINT [ "/code/entry-point.sh" ]
+

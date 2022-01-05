@@ -10,8 +10,10 @@ import Footer from './Footer';
 
 var elasticsearch = require('elasticsearch');
 
+console.log("Home.jsx - - "+process.env.REACT_APP_ELASTIC_URL);
+
 var client = new elasticsearch.Client({
-    host: 'http://localhost:9200/' 
+  host: process.env.REACT_APP_ELASTIC_URL
     // http://localhost:9200/ 
     // http://root:12345@localhost:9200/ 
     // If you have set username and password

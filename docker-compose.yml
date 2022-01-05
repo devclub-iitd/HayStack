@@ -10,8 +10,6 @@ services:
       - elastic_data:/usr/share/elasticsearch/data
     environment:
       - discovery.type=single-node
-    ports:
-      - 9200:9200 # Need to expose for frontend
     networks:
       - "internal"
     restart: "unless-stopped"
@@ -20,37 +18,44 @@ services:
     build: 
       context: ./Crawler
       dockerfile: Dockerfile
-    # image: "${REGISTRY_NAME}devclubiitd/haystack_crawler:0.1"
     restart: "unless-stopped"
     networks:
       - "internal"
       - "reverseproxy"
-    environment:
-      - ELASTIC_URL=http://elastic:9200
     depends_on:
       - elastic
+
+  nginx:
+    image: "${REGISTRY_NAME}devclubiitd/haystack-nginx:0.1"
+    build: ./nginx
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    ports:
+      - 7000:80
+    depends_on:
+        - elastic
+        - react_app
+    networks:
+      - "reverseproxy"
+      - "internal"
+    restart: always
 
   react_app:
     build:
       context: ./search_frontend
       dockerfile: Dockerfile
-    
     restart: "unless-stopped"
     networks:
       - "internal"
-    ports:
-      - 3000:3000
-    environment:
-      - ELASTIC_URL=http://localhost:9200
     depends_on:
       - elastic
 
 volumes:
   elastic_data:
-    # driver: local #as it is running on local docker environment at the time of development
 
 networks:
   reverseproxy:
     external:
       name: "reverseproxy"
   internal:
+

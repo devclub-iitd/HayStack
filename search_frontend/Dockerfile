@@ -29,7 +29,10 @@ WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
-RUN npm install react-scripts@3.4.1 -g --silent
+# ARG REACT_APP_ELASTIC_URL
+ENV REACT_APP_ELASTIC_URL "http://localhost:7000"
+
+# RUN npm install react-scripts@3.4.1 -g --silent
 
 # install app dependencies
 COPY package.json package-lock.json ./
