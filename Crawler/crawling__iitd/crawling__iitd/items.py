@@ -88,7 +88,7 @@ class CrawlingIitdItem(scrapy.Item):
                           "visits":0
                         })
 
-        if len(bulk_lst)>=100:
+        if len(bulk_lst)>=10:
             bulk(es_client,bulk_lst)
             bulk_lst.clear()
             return

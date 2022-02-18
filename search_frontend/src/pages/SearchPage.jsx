@@ -266,15 +266,16 @@ function SearchPage({query, all="_active",profs="",courses="", images=""}) {
  
 function linkClicked(item)
 {
-client.update({
-    index: "iitd_sites",
-    id:item["url"],
-    body: {
-      doc:{
-        visits:item["visits"]+1
-      }
-    }
-});
+// client.update({
+//     index: "iitd_sites",
+//     id:item["url"],
+//     body: {
+//       doc:{
+//         visits:item["visits"]+1
+//       }
+//     }
+// });
+
 } 
 
 
